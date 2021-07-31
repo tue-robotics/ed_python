@@ -4,7 +4,6 @@ project(ed_python)
 find_package(catkin REQUIRED
   COMPONENTS
   ed_msgs
-  rospy
 )
 
 catkin_python_setup()
@@ -12,14 +11,10 @@ catkin_python_setup()
 catkin_package(
   INCLUDE_DIRS
   LIBRARIES
-  CATKIN_DEPENDS
+  CATKIN_DEPENDS ed_msgs rospy
   DEPENDS
 )
 
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_topological_action_planner.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-# catkin_add_nosetests(test)
+if (CATKIN_ENABLE_TESTING)
+  catkin_add_nosetests(test)
+endif()
