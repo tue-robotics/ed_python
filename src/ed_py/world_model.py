@@ -2,6 +2,7 @@ from typing import List, Union
 
 from geometry_msgs.msg import PointStamped
 import rospy
+import PyKDL as kdl
 from pykdl_ros import VectorStamped
 import tf2_ros
 
