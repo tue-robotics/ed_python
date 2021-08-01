@@ -3,7 +3,6 @@ project(ed_python)
 
 find_package(catkin REQUIRED
   COMPONENTS
-  ed_msgs
 )
 
 catkin_python_setup()
@@ -11,7 +10,7 @@ catkin_python_setup()
 catkin_package(
   INCLUDE_DIRS
   LIBRARIES
-  CATKIN_DEPENDS ed_msgs rospy
+  CATKIN_DEPENDS ed_msgs pykdl_ros rospy tf2_pykdl_ros tf2_ros
   DEPENDS
 )
 

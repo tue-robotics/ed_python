@@ -1,14 +1,16 @@
 # System
 import yaml
 
+from ed_msgs.msg import EntityInfo
 import PyKDL as kdl
-
-# ROS
+from pykdl_ros import FrameStamped
 import rospy
 
-from ed_msgs.msg import EntityInfo
+# noinspection PyUnresolvedReferences
+import tf2_ros
+# noinspection PyUnresolvedReferences
+import tf2_pykdl_ros
 
-# from robot_skills.util.kdl_conversions import FrameStamped, pose_msg_to_kdl_frame
 from .shape import shape_from_entity_info
 from .volume import volumes_from_entity_volumes_msg
 
@@ -152,12 +154,12 @@ class Entity:
     @property
     def pose(self):
         """Returns the pose of the Entity as a FrameStamped"""
-        return FrameStamped(frame=self._pose, frame_id=self.frame_id)
+        return FrameStamped(frame=self._pose, stamp=rospy.Time.now(), frame_id=self.frame_id)
 
     @pose.setter
     def pose(self, pose):
         """Setter"""
-        self._pose = pose_msg_to_kdl_frame(pose)
+        self._pose = tf2_ros.convert(pose, FrameStamped)
 
     @property
     def person_properties(self):
@@ -254,7 +256,7 @@ def from_entity_info(e):
     identifier = e.id
     object_type = e.type
     frame_id = "map"  # ED has all poses in map
-    pose = pose_msg_to_kdl_frame(e.pose)
+    pose = tf2_ros.convert(e.pose, kdl.Frame)
     shape = shape_from_entity_info(e)
 
     last_update_time = e.last_update_time.to_sec()
