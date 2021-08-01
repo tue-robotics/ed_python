@@ -251,8 +251,8 @@ def from_entity_info(e):
     :return: Entity
     """
     assert isinstance(e, EntityInfo)
-    identifier = e.uuid
-    object_type = e.etype
+    identifier = e.id
+    object_type = e.type
     frame_id = "map"  # ED has all poses in map
     pose = tf2_ros.convert(e.pose, kdl.Frame)
     shape = shape_from_entity_info(e)
