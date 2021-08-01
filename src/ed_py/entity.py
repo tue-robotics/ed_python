@@ -42,7 +42,7 @@ class Entity:
         :param volumes: dict mapping strings to Volume
         :param super_types: list with strings representing super types in an ontology of object types
         """
-        self.id = identifier
+        self.uuid = identifier
         self.etype = object_type
         self.frame_id = frame_id
         self._pose = pose
@@ -251,7 +251,7 @@ def from_entity_info(e):
     :return: Entity
     """
     assert isinstance(e, EntityInfo)
-    identifier = e.id
+    identifier = e.uuid
     object_type = e.etype
     frame_id = "map"  # ED has all poses in map
     pose = tf2_ros.convert(e.pose, kdl.Frame)
@@ -261,7 +261,7 @@ def from_entity_info(e):
 
     # The data is a string but can be parsed as yaml, which then represent is a much more usable data structure
     volumes = volumes_from_entity_volumes_msg(e.volumes)
-    rospy.logdebug("Entity(id={id}) has volumes {vols} ".format(id=identifier, vols=volumes.keys()))
+    rospy.logdebug(f"Entity(id={identifier}) has volumes {volumes.keys()} ")
 
     super_types = e.types
 
