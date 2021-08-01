@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Union
 
 import PyKDL as kdl
 from geometry_msgs.msg import Point
@@ -11,11 +11,11 @@ import tf2_pykdl_ros
 
 from ed_msgs.srv import Configure, SimpleQuery, SimpleQueryRequest, UpdateSrv, Reset
 
-from .entity import from_entity_info
+from .entity import Entity, from_entity_info
 
 
 class WM:
-    def __init__(self, robot_name, tf_buffer=None):
+    def __init__(self, tf_buffer=None, ns: str = None):
         if tf_buffer is None:
             self.tf_buffer = tf2_ros.Buffer()
             self._tf_listener = tf2_ros.TransformListener(self.tf_buffer)
@@ -24,11 +24,16 @@ class WM:
 
         self.__ros_connections = {}
 
-        self._ed_simple_query_srv = self.create_service_client(f"/{robot_name}/ed/simple_query", SimpleQuery)
-        self._ed_update_srv = self.create_service_client(f"/{robot_name}/ed/update", UpdateSrv)
+        if ns is None:
+            prefix = ""
+        else:
+            prefix = f"/{ns}/"
 
-        self._ed_configure_srv = self.create_service_client(f"/{robot_name}/ed/configure", Configure)
-        self._ed_reset_srv = self.create_service_client(f"/{robot_name}/ed/reset", Reset)
+        self._ed_simple_query_srv = self.create_service_client(f"{prefix}ed/simple_query", SimpleQuery)
+        self._ed_update_srv = self.create_service_client(f"{prefix}ed/update", UpdateSrv)
+
+        self._ed_configure_srv = self.create_service_client(f"{prefix}ed/configure", Configure)
+        self._ed_reset_srv = self.create_service_client(f"{prefix}ed/reset", Reset)
 
         self.robot_name = robot_name
 
@@ -55,12 +60,12 @@ class WM:
 
     def get_entities(
         self,
-        etype="",
-        center_point=None,
-        radius=float("inf"),
-        uuid="",
-        ignore_z=False,
-    ):
+        center_point: VectorStamped,
+        etype: str = "",
+        radius: float = float("inf"),
+        uuid: str = "",
+        ignore_z: bool = False,
+    ) -> List[Entity]:
         """
         Get entities via Simple Query interface
 
@@ -70,8 +75,6 @@ class WM:
         :param uuid: uuid of entity
         :param ignore_z: Consider only the distance in the X,Y plane for the radius from center_point
         """
-        if center_point is None:
-            center_point = VectorStamped(kdl.Vector(), rospy.Time.now(), "map")
         center_point_in_map = self.tf_buffer.transform(center_point, "map")
         query = SimpleQueryRequest(
             uuid=uuid,
@@ -93,11 +96,9 @@ class WM:
 
         return entities
 
-    def get_closest_entity(self, etype="", center_point=None, radius=float("inf")):
-        if not center_point:
-            center_point = VectorStamped(kdl.Vector(), stamp=rospy.Time.now(), frame_id=self.robot_name + "/base_link")
+    def get_closest_entity(self, center_point: VectorStamped, etype: str = "", radius: float = float("inf")) -> Entity:
 
-        entities = self.get_entities(etype=etype, center_point=center_point, radius=radius)
+        entities = self.get_entities(center_point=center_point, etype=etype, radius=radius)
 
         # HACK
         entities = [e for e in entities if e.shape is not None and e.etype != ""]
@@ -115,15 +116,10 @@ class WM:
 
         return entities[0]
 
-    def get_closest_room(self, center_point=None, radius=float("inf")):
-        if not center_point:
-            center_point = VectorStamped(
-                kdl.Vector(x=0, y=0, z=0), stamp=rospy.Time.now(), frame_id=self.robot_name + "/base_link"
-            )
+    def get_closest_room(self, center_point: VectorStamped, radius: float = float("inf")) -> Entity:
+        return self.get_closest_entity(center_point=center_point, etype="room", radius=radius)
 
-        return self.get_closest_entity(etype="room", center_point=center_point, radius=radius)
-
-    def get_entity(self, uuid):
+    def get_entity(self, uuid: str):
         entities = self.get_entities(uuid=uuid)
         if len(entities) == 0:
             rospy.logerr(f'Could not get_entity(uuid="{uuid}")')
@@ -133,7 +129,7 @@ class WM:
 
     def update_entity(
         self, uuid, etype=None, frame_stamped=None, flags=None, add_flags=None, remove_flags=None, action=None
-    ):
+    ) -> bool:
         """
         Updates entity
 
@@ -202,7 +198,7 @@ class WM:
 
         return self._ed_update_srv(request=json)
 
-    def remove_entity(self, uuid):
+    def remove_entity(self, uuid: str) -> bool:
         """
         Removes entity with the provided uuid to the world model
 
@@ -217,16 +213,14 @@ class WM:
         for uuid in unlock_ids:
             self.update_entity(uuid=uuid, remove_flags=["locked"])
 
-    def get_closest_possible_person_entity(self, center_point=None, radius=float("inf")):
+    def get_closest_possible_person_entity(self, center_point, radius=float("inf")) -> Entity:
         """
         Returns the "possible_human" entity closest to a certain center point.
 
-        :param center_point: (VectorStamped) indicating where the human should be close to
+        :param center_point: (VectorStamped) indicating where the human should be close to; frame_id should be map
         :param radius: (float) radius to look for possible humans
         :return: (Entity) entity (if found), None otherwise
         """
-        if center_point is None:
-            center_point = VectorStamped(kdl.Vector(), rospy.Time.now(), "map")
         assert center_point.frame_uuid.endswith("map"), "Other frame uuids not yet implemented"
 
         # Get all entities
@@ -249,7 +243,7 @@ class WM:
 
         return entities[0]
 
-    def get_full_uuid(self, short_uuid):
+    def get_full_uuid(self, short_uuid: str) -> str:
         """Get an entity"s full uuid based on the first characters of its uuid like you can do with git hashes"""
         all_entities = self.get_entities()
         matches = filter(lambda fill_uuid: fill_uuid.startswith(short_uuid), [entity.uuid for entity in all_entities])
