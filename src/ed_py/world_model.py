@@ -118,7 +118,9 @@ class WM:
         return self.get_closest_entity(center_point=center_point, etype="room", radius=radius)
 
     def get_entity(self, uuid: str):
-        entities = self.get_entities(uuid=uuid)
+        entities = self.get_entities(uuid=uuid, center_point=VectorStamped(vector=kdl.Vector(),
+                                                                           stamp=rospy.Time(),
+                                                                           frame_id='map'))
         if len(entities) == 0:
             rospy.logerr(f'Could not get_entity(uuid="{uuid}")')
             return None
