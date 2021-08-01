@@ -10,7 +10,7 @@ catkin_python_setup()
 catkin_package(
   INCLUDE_DIRS
   LIBRARIES
-  CATKIN_DEPENDS ed_msgs pykdl_ros rospy tf2_pykdl_ros tf2_ros
+  CATKIN_DEPENDS ed_msgs pykdl_ros rospy tf2_geometry_msgs tf2_pykdl_ros tf2_ros
   DEPENDS
 )
 

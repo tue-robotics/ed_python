@@ -22,6 +22,7 @@
   <exec_depend>pykdl_ros</exec_depend>
   <exec_depend>python_orocos_kdl</exec_depend>
   <exec_depend>rospy</exec_depend>
+  <exec_depend>tf2_geometry_msgs</exec_depend>
   <exec_depend>tf2_pykdl_ros</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
 

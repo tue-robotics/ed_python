@@ -1,10 +1,12 @@
 from typing import List, Union
 
-import PyKDL as kdl
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import PointStamped
 import rospy
 from pykdl_ros import VectorStamped
 import tf2_ros
+
+# noinspection PyUnresolvedReferences
+import tf2_geometry_msgs
 
 # noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
@@ -77,7 +79,7 @@ class WM:
         query = SimpleQueryRequest(
             uuid=uuid,
             type=etype,
-            center_point=tf2_ros.convert(center_point_in_map, Point),
+            center_point=tf2_ros.convert(center_point_in_map, PointStamped).point,
             radius=radius,
             ignore_z=ignore_z,
         )
