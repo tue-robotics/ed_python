@@ -35,8 +35,6 @@ class WM:
         self._ed_configure_srv = self.create_service_client(f"{prefix}ed/configure", Configure)
         self._ed_reset_srv = self.create_service_client(f"{prefix}ed/reset", Reset)
 
-        self.robot_name = robot_name
-
     def create_service_client(self, name: str, srv_type):
         """
         Creates a service client
