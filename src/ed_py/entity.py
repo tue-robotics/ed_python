@@ -1,10 +1,10 @@
-from collections.abc import Mapping
+from typing import Mapping
 from typing import List
 import yaml
 
 from ed_msgs.msg import EntityInfo
 import PyKDL as kdl
-from pykdl_ros import FrameStamped
+from pykdl_ros import FrameStamped, VectorStamped
 import rospy
 
 import tf2_ros
@@ -12,8 +12,8 @@ import tf2_ros
 # noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
 
-from .shape import shape_from_entity_info
-from .volume import Volume, volumes_from_entity_volumes_msg
+from ed_py.shape import shape_from_entity_info
+from ed_py.volume import Volume, volumes_from_entity_volumes_msg
 
 
 class Entity:
@@ -75,9 +75,7 @@ class Entity:
         fid2 = self.frame_id if self.frame_id[0] != "/" else self.frame_id[1:]  # Remove slash for comparison
         if fid1 != fid2:
             rospy.logerr(
-                "Cannot compute with volume and entity defined w.r.t. different frame: {} and {}".format(
-                    point.frame_id, self.frame_id
-                )
+                f"Cannot compute with volume and entity defined w.r.t. different frame: {point.frame_id} and {self.frame_id}"
             )
             return False
         vector = self._pose.Inverse() * point.vector
@@ -96,8 +94,7 @@ class Entity:
         :return: entities that are both in the given volume and in the list 'entities'
         :rtype: List[Entities]
         """
-
-        entities = [e for e in entities if self.in_volume(e.pose.extractVectorStamped(), volume_id)]
+        entities = [e for e in entities if self.in_volume(VectorStamped.from_FrameStamped(e.pose), volume_id)]
 
         return entities
 

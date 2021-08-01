@@ -56,7 +56,7 @@ class WM:
     def get_entities(
         self,
         etype="",
-        center_point=VectorStamped(kdl.Vector(), rospy.Time.now(), "map"),
+        center_point=None,
         radius=float("inf"),
         uuid="",
         ignore_z=False,
@@ -70,6 +70,8 @@ class WM:
         :param uuid: uuid of entity
         :param ignore_z: Consider only the distance in the X,Y plane for the radius from center_point
         """
+        if center_point is None:
+            center_point = VectorStamped(kdl.Vector(), rospy.Time.now(), "map")
         center_point_in_map = self.tf_buffer.transform(center_point, "map")
         query = SimpleQueryRequest(
             uuid=uuid,
@@ -215,9 +217,7 @@ class WM:
         for uuid in unlock_ids:
             self.update_entity(uuid=uuid, remove_flags=["locked"])
 
-    def get_closest_possible_person_entity(
-        self, center_point=VectorStamped(kdl.Vector(), rospy.Time.now(), "map"), radius=float("inf")
-    ):
+    def get_closest_possible_person_entity(self, center_point=None, radius=float("inf")):
         """
         Returns the "possible_human" entity closest to a certain center point.
 
@@ -225,6 +225,8 @@ class WM:
         :param radius: (float) radius to look for possible humans
         :return: (Entity) entity (if found), None otherwise
         """
+        if center_point is None:
+            center_point = VectorStamped(kdl.Vector(), rospy.Time.now(), "map")
         assert center_point.frame_uuid.endswith("map"), "Other frame uuids not yet implemented"
 
         # Get all entities
