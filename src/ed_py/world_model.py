@@ -77,7 +77,7 @@ class WM:
         """
         center_point_in_map = self.tf_buffer.transform(center_point, "map")
         query = SimpleQueryRequest(
-            uuid=uuid,
+            id=uuid,
             type=etype,
             center_point=tf2_ros.convert(center_point_in_map, PointStamped).point,
             radius=radius,
