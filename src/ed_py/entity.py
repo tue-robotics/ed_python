@@ -1,4 +1,5 @@
-# System
+from collections.abc import Mapping
+from typing import List
 import yaml
 
 from ed_msgs.msg import EntityInfo
@@ -8,11 +9,12 @@ import rospy
 
 # noinspection PyUnresolvedReferences
 import tf2_ros
+
 # noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
 
 from .shape import shape_from_entity_info
-from .volume import volumes_from_entity_volumes_msg
+from .volume import Volume, volumes_from_entity_volumes_msg
 
 
 class Entity:
@@ -22,11 +24,11 @@ class Entity:
         self,
         identifier,
         object_type,
-        frame_id,
+        frame_id: str,
         pose,
         shape,
-        volumes,
-        super_types,
+        volumes: Mapping[str, Volume],
+        super_types: List[str],
         last_update_time,
         person_properties=None,
     ):
