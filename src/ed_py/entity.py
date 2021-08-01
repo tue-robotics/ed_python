@@ -7,7 +7,6 @@ import PyKDL as kdl
 from pykdl_ros import FrameStamped
 import rospy
 
-# noinspection PyUnresolvedReferences
 import tf2_ros
 
 # noinspection PyUnresolvedReferences
@@ -44,7 +43,7 @@ class Entity:
         :param super_types: list with strings representing super types in an ontology of object types
         """
         self.id = identifier
-        self.type = object_type
+        self.etype = object_type
         self.frame_id = frame_id
         self._pose = pose
         self.shape = shape
@@ -256,7 +255,7 @@ def from_entity_info(e):
     """
     assert isinstance(e, EntityInfo)
     identifier = e.id
-    object_type = e.type
+    object_type = e.etype
     frame_id = "map"  # ED has all poses in map
     pose = tf2_ros.convert(e.pose, kdl.Frame)
     shape = shape_from_entity_info(e)
@@ -283,14 +282,14 @@ def from_entity_info(e):
         last_update_time=last_update_time,
     )
 
-    if e.type == "person":
+    if e.etype == "person":
         try:
             pp_dict = yaml.load(e.data)
             del pp_dict["position"]
             del pp_dict["header"]
             entity.person_properties = PersonProperties(parent_entity=entity, **pp_dict)
         except TypeError as te:
-            rospy.logerr("Cannot instantiate PersonProperties from {}: {}".format(e.data, te))
+            rospy.logerr(f"Cannot instantiate PersonProperties from {e.data}: {te}")
 
     return entity
 
