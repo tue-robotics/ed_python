@@ -158,9 +158,7 @@ def shape_from_entity_info(e):
     if not e.convex_hull:
         return Shape()
 
-    return RightPrism(
-        convex_hull=[kdl.Vector(p.x(), p.y(), p.z()) for p in e.convex_hull], z_min=e.z_min, z_max=e.z_max
-    )
+    return RightPrism(convex_hull=[kdl.Vector(p.x, p.y, p.z) for p in e.convex_hull], z_min=e.z_min, z_max=e.z_max)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import PyKDL as kdl
 from numpy import abs
 
 import tf2_ros
+
 # noinspection PyUnresolvedReferences
 import tf2_kdl
 
@@ -265,7 +266,8 @@ def volume_from_entity_volume_msg(msg):
         if not subvolume.geometry.type == subvolume.geometry.BOX:
             return None, None
 
-        center_point = tf2_ros.convert(subvolume.center_point.point, kdl.Vector)
+        p = subvolume.center_point.point
+        center_point = kdl.Vector(p.x, p.y, p.z)
 
         size = subvolume.geometry.dimensions
         size = kdl.Vector(size[0], size[1], size[2])

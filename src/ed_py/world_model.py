@@ -1,5 +1,7 @@
 from typing import List, Union
 
+import traceback
+
 from geometry_msgs.msg import PointStamped
 import rospy
 import PyKDL as kdl
@@ -91,7 +93,8 @@ class WM:
         except Exception as e:
             rospy.logerr(
                 f"get_entities(uuid={uuid}, type={etype}, center_point={center_point}, radius={radius}, "
-                f"ignore_z={ignore_z})\n{e}"
+                f"ignore_z={ignore_z})\n{e}, "
+                f"{traceback.format_exc()}"
             )
             return []
 
@@ -121,9 +124,9 @@ class WM:
         return self.get_closest_entity(center_point=center_point, etype="room", radius=radius)
 
     def get_entity(self, uuid: str):
-        entities = self.get_entities(uuid=uuid, center_point=VectorStamped(vector=kdl.Vector(),
-                                                                           stamp=rospy.Time(),
-                                                                           frame_id='map'))
+        entities = self.get_entities(
+            uuid=uuid, center_point=VectorStamped(vector=kdl.Vector(), stamp=rospy.Time(), frame_id="map")
+        )
         if len(entities) == 0:
             rospy.logerr(f'Could not get_entity(uuid="{uuid}")')
             return None

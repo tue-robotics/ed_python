@@ -1,19 +1,25 @@
-from typing import Mapping
-from typing import List
+from typing import List, Mapping
+
 import yaml
 
 from ed_msgs.msg import EntityInfo
+from geometry_msgs.msg import PoseStamped
 import PyKDL as kdl
 from pykdl_ros import FrameStamped, VectorStamped
 import rospy
 
+from std_msgs.msg import Header
+
 import tf2_ros
+
+# noinspection PyUnresolvedReferences
+import tf2_geometry_msgs
 
 # noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
 
-from ed_py.shape import shape_from_entity_info
-from ed_py.volume import Volume, volumes_from_entity_volumes_msg
+from .shape import shape_from_entity_info
+from .volume import Volume, volumes_from_entity_volumes_msg
 
 
 class Entity:
@@ -254,7 +260,9 @@ def from_entity_info(e):
     identifier = e.id
     object_type = e.type
     frame_id = "map"  # ED has all poses in map
-    pose = tf2_ros.convert(e.pose, kdl.Frame)
+    # ToDo: Change pose in msg definition to PoseStamped
+    pose_stamped = PoseStamped(pose=e.pose, header=Header(stamp=rospy.Time.now(), frame_id=frame_id))
+    pose = tf2_ros.convert(pose_stamped, FrameStamped)
     shape = shape_from_entity_info(e)
 
     last_update_time = e.last_update_time.to_sec()
@@ -279,7 +287,7 @@ def from_entity_info(e):
         last_update_time=last_update_time,
     )
 
-    if e.etype == "person":
+    if e.type == "person":
         try:
             pp_dict = yaml.load(e.data)
             del pp_dict["position"]
