@@ -224,7 +224,7 @@ class WM:
         :param radius: (float) radius to look for possible humans
         :return: (Entity) entity (if found), None otherwise
         """
-        assert center_point.frame_uuid.endswith("map"), "Other frame uuids not yet implemented"
+        assert center_point.frame_uuid.endswith("map"), "Other frame ids not yet implemented"
 
         # Get all entities
         entities = self.get_entities(etype="", center_point=center_point, radius=radius)
