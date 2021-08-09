@@ -27,8 +27,6 @@ class WM:
         else:
             self.tf_buffer = tf_buffer
 
-        self.__ros_connections = {}
-
         if ns is None:
             prefix = ""
         else:
@@ -40,7 +38,8 @@ class WM:
         self._ed_configure_srv = self.create_service_client(f"{prefix}ed/configure", Configure)
         self._ed_reset_srv = self.create_service_client(f"{prefix}ed/reset", Reset)
 
-    def create_service_client(self, name: str, srv_type):
+    @staticmethod
+    def create_service_client(name: str, srv_type):
         """
         Creates a service client
 
@@ -48,18 +47,7 @@ class WM:
         :param srv_type: service type
         :return: the service client
         """
-        srv = rospy.ServiceProxy(name, srv_type)
-        self._add_connection(name, srv)
-        return srv
-
-    def _add_connection(self, name: str, connection: Union[rospy.Subscriber, rospy.ServiceProxy]):
-        """
-        Adds a connection to the internal dict with connections that is used when initializing the robot object.
-
-        :param name: name of the connection
-        :param connection: connection to add. This might be a ServiceProxy, ActionClient or Subscriber
-        """
-        self.__ros_connections[name] = connection
+        return rospy.ServiceProxy(name, srv_type)
 
     def get_entities(
         self,
