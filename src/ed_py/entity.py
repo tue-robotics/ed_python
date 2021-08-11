@@ -100,7 +100,7 @@ class Entity:
         :return: entities that are both in the given volume and in the list 'entities'
         :rtype: List[Entities]
         """
-        entities = [e for e in entities if self.in_volume(VectorStamped.from_FrameStamped(e.pose), volume_id)]
+        entities = [e for e in entities if self.in_volume(VectorStamped.from_framestamped(e.pose), volume_id)]
 
         return entities
 

@@ -14,7 +14,7 @@ def rooms_of_entity(wm: WM, entity: Entity) -> List[Entity]:
     """
     all_rooms = wm.get_entities("room")
     rooms = []
-    entity_point = VectorStamped.from_FrameStamped(entity.pose)
+    entity_point = VectorStamped.from_framestamped(entity.pose)
     for room in all_rooms:
         if room.in_volume(entity_point, "in"):
             rooms.append(room)
