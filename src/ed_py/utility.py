@@ -26,13 +26,15 @@ def rooms_of_volume(wm: WM, entity: Entity, volume_id: str) -> List[Entity]:
     """
     Determine all the rooms a volume of an entity is in
     """
-    all_rooms = wm.get_entities("room")
+    breakpoint()
+    all_rooms = wm.get_entities(VectorStamped.from_xyz(0, 0, 0, rospy.Time.now(), "map"),
+                                etype="room")
     rooms = []
     try:
         volume = entity.volumes[volume_id]
         volume_point = VectorStamped(volume.center_point, rospy.Time.now(), entity.uuid)
     except KeyError as e:
-        rospy.logerr(f"Entity({entity.id}) has not a volume with the name: {volume_id}\n{e}")
+        rospy.logerr(f"Entity({entity.uuid}) has not a volume with the name: {volume_id}\n{e}")
         return []
 
     for room in all_rooms:

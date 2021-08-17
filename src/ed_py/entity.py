@@ -73,7 +73,7 @@ class Entity:
         """
         # Check if the volume exists
         if volume_id not in self._volumes:
-            rospy.logdebug("{} not a volume of {}".format(volume_id, self.id))
+            rospy.logdebug("{} not a volume of {}".format(volume_id, self.uuid))
             return False
 
         # Transform the point
@@ -179,7 +179,7 @@ class Entity:
 
     def __repr__(self):
         return "Entity(id='{id}', type='{type}', frame={frame}, person_properties={pp})".format(
-            id=self.id, type=self.type, frame=self.pose, pp=self._person_properties
+            id=self.uuid, type=self.etype, frame=self.pose, pp=self._person_properties
         )
 
 
