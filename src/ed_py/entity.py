@@ -84,7 +84,7 @@ class Entity:
                 f"Cannot compute with volume and entity defined w.r.t. different frame: {point.header.frame_id} and {self.frame_id}"
             )
             return False
-        vector = self._pose.Inverse() * point.vector
+        vector = self.pose.frame.Inverse() * point.vector
 
         # Check if the point is inside of the volume
         return self._volumes[volume_id].contains(vector)
