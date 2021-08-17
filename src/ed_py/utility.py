@@ -26,7 +26,6 @@ def rooms_of_volume(wm: WM, entity: Entity, volume_id: str) -> List[Entity]:
     """
     Determine all the rooms a volume of an entity is in
     """
-    breakpoint()
     all_rooms = wm.get_entities(VectorStamped.from_xyz(0, 0, 0, rospy.Time.now(), "map"),
                                 etype="room")
     rooms = []

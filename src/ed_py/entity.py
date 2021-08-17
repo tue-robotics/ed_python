@@ -18,7 +18,7 @@ import tf2_geometry_msgs
 # noinspection PyUnresolvedReferences
 import tf2_pykdl_ros
 
-from .shape import shape_from_entity_info
+from .shape import shape_from_entity_info, Shape
 from .volume import Volume, volumes_from_entity_volumes_msg
 
 
@@ -27,11 +27,11 @@ class Entity:
 
     def __init__(
         self,
-        identifier,
-        object_type,
+        identifier: str,
+        object_type: str,
         frame_id: str,
-        pose,
-        shape,
+        pose: FrameStamped,
+        shape: Shape,
         volumes: Mapping[str, Volume],
         super_types: List[str],
         last_update_time,
@@ -158,7 +158,7 @@ class Entity:
     @property
     def pose(self):
         """Returns the pose of the Entity as a FrameStamped"""
-        return FrameStamped(frame=self._pose, stamp=rospy.Time.now(), frame_id=self.frame_id)
+        return self._pose
 
     @pose.setter
     def pose(self, pose):
