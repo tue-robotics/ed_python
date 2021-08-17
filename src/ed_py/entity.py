@@ -77,7 +77,9 @@ class Entity:
             return False
 
         # Transform the point
-        fid1 = point.header.frame_id if point.header.frame_id[0] != "/" else point.header.frame_id[1:]  # Remove slash for comparison
+        fid1 = (
+            point.header.frame_id if point.header.frame_id[0] != "/" else point.header.frame_id[1:]
+        )  # Remove slash for comparison
         fid2 = self.frame_id if self.frame_id[0] != "/" else self.frame_id[1:]  # Remove slash for comparison
         if fid1 != fid2:
             rospy.logerr(
