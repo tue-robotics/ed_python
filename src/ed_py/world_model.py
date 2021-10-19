@@ -156,7 +156,7 @@ class WM:
             json_entity += f', "action": "{action}"'
 
         if frame_stamped:
-            if frame_stamped.frame_uuid != "/map" and frame_stamped.frame_uuid != "map":
+            if frame_stamped.header.frame_id != "/map" and frame_stamped.header.frame_id != "map":
                 rospy.loginfo("update_entity: frame not in map, transforming")
                 frame_stamped = self.tf_buffer.transform(frame_stamped, "map")
 
@@ -226,7 +226,7 @@ class WM:
         :param radius: (float) radius to look for possible humans
         :return: (Entity) entity (if found), None otherwise
         """
-        assert center_point.frame_uuid.endswith("map"), "Other frame ids not yet implemented"
+        assert center_point.header.frame_id.endswith("map"), "Other frame ids not yet implemented"
 
         # Get all entities
         entities = self.get_entities(etype="", center_point=center_point, radius=radius)
