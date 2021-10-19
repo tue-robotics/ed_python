@@ -213,7 +213,7 @@ class PersonProperties(object):
         :param gender_confidence: Confidence of the classifier in the gender above.
         :param pointing_pose: In which direction is the person pointing
         :param posture: String with a value like 'sitting', 'laying', 'standing' etc.
-        :param reliability:  ?
+        :param reliability:  ToDO
         :param shirt_colors: list of 3 shirt colors, sorted from most dominant to less dominant
         :param tags: Other tags
         :param tagnames: Other tagnames
