@@ -63,7 +63,7 @@ class BoxVolume(Volume):
         Points are defined relative to the object they belong to
 
         :param min_corner: PyKDL.Vector with the minimum bounding box corner
-        :param max_corner: PyKDL.Vector with the minimum bounding box corner
+        :param max_corner: PyKDL.Vector with the maximum bounding box corner
         """
         super(BoxVolume, self).__init__()
 
