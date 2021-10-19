@@ -142,7 +142,7 @@ class RightPrism(Shape):
         8.0
         """
 
-        # TODO: this only uses the bounding volume's size, which might not be accurate
+        # TODO: this only uses the bounding box's size, which might not be accurate
         size_x = abs(self.x_max - self.x_min)
         size_y = abs(self.y_max - self.y_min)
         size_z = abs(self.z_max - self.z_min)
