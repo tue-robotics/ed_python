@@ -250,7 +250,7 @@ class PersonProperties(object):
         )
 
 
-def from_entity_info(e):
+def from_entity_info(e: EntityInfo) -> Entity:
     """
     Converts ed_msgs.msg.EntityInfo to an Entity
 
