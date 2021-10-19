@@ -10,7 +10,7 @@ import tf2_kdl
 
 class Volume:
     """
-    Represents an volume of an entity
+    Represents a volume of an entity
 
     Points are defined relative to the object they belong to
     """
