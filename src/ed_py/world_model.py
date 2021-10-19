@@ -5,7 +5,7 @@ import traceback
 from geometry_msgs.msg import PointStamped
 import rospy
 import PyKDL as kdl
-from pykdl_ros import VectorStamped
+from pykdl_ros import VectorStamped, FrameStamped
 import tf2_ros
 
 # noinspection PyUnresolvedReferences
@@ -39,7 +39,7 @@ class WM:
         self._ed_reset_srv = self.create_service_client(f"{prefix}ed/reset", Reset)
 
     @staticmethod
-    def create_service_client(name: str, srv_type):
+    def create_service_client(name: str, srv_type: type):
         """
         Creates a service client
 
@@ -124,7 +124,14 @@ class WM:
         return entities[0]
 
     def update_entity(
-        self, uuid, etype=None, frame_stamped=None, flags=None, add_flags=None, remove_flags=None, action=None
+        self,
+        uuid: str,
+        etype: str = None,
+        frame_stamped: FrameStamped = None,
+        flags=None,
+        add_flags: List[str] = None,
+        remove_flags: List[str] = None,
+        action: str = None,
     ) -> bool:
         """
         Updates entity
@@ -202,18 +209,20 @@ class WM:
         """
         return self.update_entity(uuid=uuid, action="remove")
 
-    def lock_entities(self, lock_ids, unlock_ids):
+    def lock_entities(self, lock_ids: List[str], unlock_ids: List[str]):
         for uuid in lock_ids:
             self.update_entity(uuid=uuid, add_flags=["locked"])
 
         for uuid in unlock_ids:
             self.update_entity(uuid=uuid, remove_flags=["locked"])
 
-    def get_closest_possible_person_entity(self, center_point, radius=float("inf")) -> Union[Entity, None]:
+    def get_closest_possible_person_entity(
+        self, center_point: VectorStamped, radius: float = float("inf")
+    ) -> Union[Entity, None]:
         """
         Returns the "possible_human" entity closest to a certain center point.
 
-        :param center_point: (VectorStamped) indicating where the human should be close to; frame_id should be map
+        :param center_point: Point indicating where the human should be close to; frame_id should be map
         :param radius: (float) radius to look for possible humans
         :return: (Entity) entity (if found), None otherwise
         """
