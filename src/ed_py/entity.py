@@ -1,4 +1,6 @@
-from typing import List, Mapping
+from __future__ import annotations
+
+from typing import List, Mapping, Union
 
 import yaml
 
@@ -63,7 +65,7 @@ class Entity:
     def volumes(self):
         return self._volumes
 
-    def in_volume(self, point, volume_id):
+    def in_volume(self, point: VectorStamped, volume_id: str) -> bool:
         """
         Checks if the point is in the volume identified by the volume id
 
@@ -91,16 +93,13 @@ class Entity:
         # Check if the point is inside of the volume
         return self._volumes[volume_id].contains(vector)
 
-    def entities_in_volume(self, entities, volume_id):
+    def entities_in_volume(self, entities: List[Entity], volume_id: str) -> List[Entity]:
         """
         Filter the collection of entities down to only those in the given volume
 
         :param entities: collection/sequence of entities
-        :type entities: List[Entity]
         :param volume_id: volume these entities need to be in
-        :type volume_id: str
         :return: entities that are both in the given volume and in the list 'entities'
-        :rtype: List[Entities]
         """
         entities = [e for e in entities if self.in_volume(VectorStamped.from_framestamped(e.pose), volume_id)]
 
@@ -110,11 +109,11 @@ class Entity:
     def last_update_time(self):
         return self._last_update_time
 
-    def distance_to_2d(self, point):
+    def distance_to_2d(self, point: kdl.Vector) -> float:
         """
         Calculate the distance between this entity's pose and the given point.
 
-        :param point: kdl.Vector, assumed to be in the same frame_id as the entity itself
+        :param point: Assumed to be in the same frame_id as the entity itself
         :return: the distance between the entity's pose and the point
 
         >>> e = Entity("dummy", None, None, kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), None, {}, None, 0)
@@ -128,11 +127,11 @@ class Entity:
         difference.z(0)
         return difference.Norm()
 
-    def distance_to_3d(self, point):
+    def distance_to_3d(self, point: kdl.Vector) -> kdl.Vector:
         """
         Calculate the distance between this entity's pose and the given point.
 
-        :param point: kdl.Vector, assumed to be in the same frame_id as the entity itself
+        :param point: Assumed to be in the same frame_id as the entity itself
         :return: the distance between the entity's pose and the point
 
         >>> e = Entity("dummy", None, None, kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), None, {}, None, 0)
@@ -142,12 +141,12 @@ class Entity:
         """
         return (self._pose.p - point).Norm()
 
-    def is_a(self, super_type):
+    def is_a(self, super_type: str) -> bool:
         """
         Check whether the entity is a (subclass of) some supertype
 
-        :param super_type: str representing the name of the super_type
-        :return: bool True if the entity is a (sub)type of the given super_type
+        :param super_type: Representing the name of the super_type
+        :return: True if the entity is a (sub)type of the given super_type
 
         >>> e = Entity("dummy", "coffee_table", None, None, None, {}, ["coffee_table", "table", "furniture", "thing"], 0)
         >>> e.is_a("furniture")
@@ -158,7 +157,7 @@ class Entity:
         return super_type in self.super_types
 
     @property
-    def pose(self):
+    def pose(self) -> FrameStamped:
         """Returns the pose of the Entity as a FrameStamped"""
         return self._pose
 
@@ -168,7 +167,7 @@ class Entity:
         self._pose = tf2_ros.convert(pose, FrameStamped)
 
     @property
-    def person_properties(self):
+    def person_properties(self) -> Union[PersonProperties, None]:
         if self._person_properties:
             return self._person_properties
         else:
@@ -176,7 +175,7 @@ class Entity:
             return None
 
     @person_properties.setter
-    def person_properties(self, value):
+    def person_properties(self, value: PersonProperties):
         self._person_properties = value
 
     def __repr__(self):
@@ -188,15 +187,15 @@ class Entity:
 class PersonProperties(object):
     def __init__(
         self,
-        name,
-        age,
-        emotion,
-        gender,
-        gender_confidence,
+        name: str,
+        age: int,
+        emotion: str,
+        gender: str,
+        gender_confidence: float,
         pointing_pose,
-        posture,
+        posture: str,
         reliability,
-        shirt_colors,
+        shirt_colors: List[str],
         tags,
         tagnames,
         velocity,
@@ -209,7 +208,7 @@ class PersonProperties(object):
 
         :param name: the person's name. This is separate from the entity, which is unique while this doesn't have to be
         :param age: Estimated age of the person
-        :param emotion: str indicating the emotion
+        :param emotion: Indicating the emotion
         :param gender: Predicted gender of the person
         :param gender_confidence: Confidence of the classifier in the gender above.
         :param pointing_pose: In which direction is the person pointing
@@ -237,11 +236,11 @@ class PersonProperties(object):
         self._parent_entity = parent_entity
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @name.setter
-    def name(self, value):
+    def name(self, value: str):
         rospy.loginfo("Changing {}'s name to {}".format(self._parent_entity.id, value))
         self._name = value
 
