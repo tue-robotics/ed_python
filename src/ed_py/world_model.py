@@ -1,4 +1,4 @@
-from typing import List
+from typing import Iterable, List, Union
 
 import traceback
 
@@ -88,7 +88,9 @@ class WM:
 
         return entities
 
-    def get_closest_entity(self, center_point: VectorStamped, etype: str = "", radius: float = float("inf")) -> Entity:
+    def get_closest_entity(
+        self, center_point: VectorStamped, etype: str = "", radius: float = float("inf")
+    ) -> Union[Entity, None]:
 
         entities = self.get_entities(center_point=center_point, etype=etype, radius=radius)
 
@@ -207,7 +209,7 @@ class WM:
         for uuid in unlock_ids:
             self.update_entity(uuid=uuid, remove_flags=["locked"])
 
-    def get_closest_possible_person_entity(self, center_point, radius=float("inf")) -> Entity:
+    def get_closest_possible_person_entity(self, center_point, radius=float("inf")) -> Union[Entity, None]:
         """
         Returns the "possible_human" entity closest to a certain center point.
 
@@ -237,8 +239,8 @@ class WM:
 
         return entities[0]
 
-    def get_full_uuid(self, short_uuid: str) -> str:
+    def get_full_uuid(self, short_uuid: str) -> Iterable[str]:
         """Get an entity"s full uuid based on the first characters of its uuid like you can do with git hashes"""
-        all_entities = self.get_entities()
+        all_entities = self.get_entities(VectorStamped(kdl.Vector(), rospy.Time.now(), "map"))
         matches = filter(lambda fill_uuid: fill_uuid.startswith(short_uuid), [entity.uuid for entity in all_entities])
         return matches

@@ -150,7 +150,7 @@ class CompositeBoxVolume(Volume):
 
         Points are defined relative to the object they belong to.
 
-        :param boxes: list of tuples of two PyKDL.Vector. First one with the minimum bounding box corners,
+        :param boxes: list of tuples of two vectors. First one with the minimum bounding box corners,
                             second one with the maximum bounding box corners
         """
         super(CompositeBoxVolume, self).__init__()
