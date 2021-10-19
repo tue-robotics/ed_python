@@ -130,7 +130,7 @@ class RightPrism(Shape):
     def _calc_z_min(self) -> float:
         return self._z_min
 
-    def _calc_convex_hull(self) -> list[kdl.Vector]:
+    def _calc_convex_hull(self) -> List[kdl.Vector]:
         return self._convex_hull
 
     def _calc_size(self) -> float:

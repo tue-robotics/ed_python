@@ -1,3 +1,5 @@
+from typing import Dict, Iterable, List, Tuple, Union
+
 # ROS
 import PyKDL as kdl
 from numpy import abs
@@ -6,6 +8,8 @@ import tf2_ros
 
 # noinspection PyUnresolvedReferences
 import tf2_kdl
+
+from ed_msgs.msg import Volume as volume_msg
 
 
 class Volume:
@@ -20,17 +24,17 @@ class Volume:
         pass
 
     @property
-    def center_point(self):
+    def center_point(self) -> kdl.Vector:
         """Get the center of the Volume"""
         return self._calc_center_point()
 
-    def _calc_center_point(self):
+    def _calc_center_point(self) -> kdl.Vector:
         raise NotImplementedError(
             "_calc_center_point must be implemented by subclasses. "
             "Class {cls} has no implementation".format(cls=self.__class__.__name__)
         )
 
-    def contains(self, point):
+    def contains(self, point: kdl.Vector) -> bool:
         """
         Checks if the point is inside this volume
 
@@ -43,10 +47,10 @@ class Volume:
         )
 
     @property
-    def size(self):
+    def size(self) -> float:
         return self._calc_size()
 
-    def _calc_size(self):
+    def _calc_size(self) -> float:
         raise NotImplementedError(
             "_calc_size must be implemented by subclasses. "
             "Class {cls} has no implementation".format(cls=self.__class__.__name__)
@@ -56,14 +60,14 @@ class Volume:
 class BoxVolume(Volume):
     """Represents a box shaped volume"""
 
-    def __init__(self, min_corner, max_corner):
+    def __init__(self, min_corner: kdl.Vector, max_corner: kdl.Vector):
         """
         Constructor
 
         Points are defined relative to the object they belong to
 
-        :param min_corner: PyKDL.Vector with the minimum bounding box corner
-        :param max_corner: PyKDL.Vector with the maximum bounding box corner
+        :param min_corner: Vector with the minimum bounding box corner
+        :param max_corner: Vector with the maximum bounding box corner
         """
         super(BoxVolume, self).__init__()
 
@@ -73,7 +77,7 @@ class BoxVolume(Volume):
         self._min_corner = min_corner
         self._max_corner = max_corner
 
-    def _calc_center_point(self):
+    def _calc_center_point(self) -> kdl.Vector:
         """
         Calculate where the center of the box is located
 
@@ -87,7 +91,7 @@ class BoxVolume(Volume):
             0.5 * (self._min_corner.z() + self._max_corner.z()),
         )
 
-    def _calc_size(self):
+    def _calc_size(self) -> float:
         """
         Calculate the size of a volume
 
@@ -104,15 +108,15 @@ class BoxVolume(Volume):
         return size_x * size_y * size_z
 
     @property
-    def min_corner(self):
+    def min_corner(self) -> kdl.Vector:
         return self._min_corner
 
     @property
-    def max_corner(self):
+    def max_corner(self) -> kdl.Vector:
         return self._max_corner
 
     @property
-    def bottom_area(self):
+    def bottom_area(self) -> List[kdl.Vector]:
         convex_hull = []
         convex_hull.append(kdl.Vector(self.min_corner.x(), self.min_corner.y(), self.min_corner.z()))  # 1
         convex_hull.append(kdl.Vector(self.max_corner.x(), self.min_corner.y(), self.min_corner.z()))  # 2
@@ -120,11 +124,11 @@ class BoxVolume(Volume):
         convex_hull.append(kdl.Vector(self.min_corner.x(), self.max_corner.y(), self.min_corner.z()))  # 4
         return convex_hull
 
-    def contains(self, point):
+    def contains(self, point: kdl.Vector) -> bool:
         """
         Checks if the point is inside this volume
 
-        :param point: kdl Vector w.r.t. the same frame as this volume
+        :param point: Vector w.r.t. the same frame as this volume
         :return: True if inside, False otherwise
         """
         return (
@@ -140,7 +144,7 @@ class BoxVolume(Volume):
 class CompositeBoxVolume(Volume):
     """Represents a composite box shaped volume"""
 
-    def __init__(self, boxes):
+    def __init__(self, boxes: Iterable[Tuple[kdl.Vector, kdl.Vector]]):
         """
         Constructor
 
@@ -159,7 +163,7 @@ class CompositeBoxVolume(Volume):
         self._min_corners = zipped_corners[0]
         self._max_corners = zipped_corners[1]
 
-    def _calc_center_point(self):
+    def _calc_center_point(self) -> kdl.Vector:
         """
         Calculate where the center of the box is located
 
@@ -176,21 +180,21 @@ class CompositeBoxVolume(Volume):
         return kdl.Vector(0.5 * (min_x + max_x), 0.5 * (min_y + max_y), 0.5 * (min_z + max_z))
 
     @property
-    def min_corner(self):
+    def min_corner(self) -> kdl.Vector:
         min_x = min([v.x() for v in self._min_corners])
         min_y = min([v.y() for v in self._min_corners])
         min_z = min([v.z() for v in self._min_corners])
         return kdl.Vector(min_x, min_y, min_z)
 
     @property
-    def max_corner(self):
+    def max_corner(self) -> kdl.Vector:
         max_x = max([v.x() for v in self._max_corners])
         max_y = max([v.y() for v in self._max_corners])
         max_z = max([v.z() for v in self._max_corners])
         return kdl.Vector(max_x, max_y, max_z)
 
     @property
-    def bottom_area(self):
+    def bottom_area(self) -> List[kdl.Vector]:
         min_x = min([v.x() for v in self._min_corners])
         min_y = min([v.y() for v in self._min_corners])
         min_z = min([v.z() for v in self._min_corners])
@@ -204,11 +208,11 @@ class CompositeBoxVolume(Volume):
         ]
         return convex_hull
 
-    def contains(self, point):
+    def contains(self, point: kdl.Vector) -> bool:
         """
         Checks if the point is inside this volume
 
-        :param point: kdl Vector w.r.t. the same frame as this volume
+        :param point: Vector w.r.t. the same frame as this volume
         :return: True if inside, False otherwise
         """
         for min_corner, max_corner in zip(self._min_corners, self._max_corners):
@@ -235,7 +239,7 @@ class OffsetVolume(Volume):
     def __init__(self, offset):
         """Constructor
 
-        :param offset: float with offset [m]
+        :param offset: Offset [m]
         """
         super(OffsetVolume, self).__init__()
         self._offset = offset
@@ -244,7 +248,7 @@ class OffsetVolume(Volume):
         return "OffsetVolume(offset={})".format(self._offset)
 
 
-def volume_from_entity_volume_msg(msg):
+def volume_from_entity_volume_msg(msg: volume_msg) -> Tuple[Union[str, None], Union[Volume, None]]:
     """
     Creates a dict mapping strings to Volumes from the EntityInfo data dictionary
 
@@ -296,12 +300,12 @@ def volume_from_entity_volume_msg(msg):
         return name, CompositeBoxVolume(zip(min_corners, max_corners))
 
 
-def volumes_from_entity_volumes_msg(msg):
-    if not msg:
+def volumes_from_entity_volumes_msg(msgs: Iterable[volume_msg]) -> Dict[str, Volume]:
+    if not msgs:
         return {}
 
     volumes = {}
-    for v in msg:
+    for v in msgs:
         if not v.name:
             continue
 
