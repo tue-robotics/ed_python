@@ -116,15 +116,15 @@ class Entity:
         :param point: Assumed to be in the same frame_id as the entity itself
         :return: the distance between the entity's pose and the point
 
-        >>> pose = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), rospy.Time(), "dummy")
-        >>> e = Entity("dummy", None, None, pose, None, {}, None, 0)
+        >>> pose = kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3))
+        >>> e = Entity("dummy", None, "map", pose, None, {}, None, rospy.Time())
         >>> point = kdl.Vector(1, 1, 1)
         >>> e.distance_to_2d(point)
         2.8284271247461903
         """
 
         # The length of the difference vector between the pose's position and the point
-        difference = self.pose.frame.p - point
+        difference = self._pose.p - point
         difference.z(0)
         return difference.Norm()
 
@@ -135,13 +135,13 @@ class Entity:
         :param point: Assumed to be in the same frame_id as the entity itself
         :return: the distance between the entity's pose and the point
 
-        >>> pose = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), rospy.Time(), "dummy")
-        >>> e = Entity("dummy", None, None, pose, None, {}, None, 0)
+        >>> pose = kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3))
+        >>> e = Entity("dummy", None, "map", pose, None, {}, None, rospy.Time())
         >>> point = kdl.Vector(1, 1, 1)
         >>> e.distance_to_3d(point)
         3.4641016151377544
         """
-        return (self.pose.frame.p - point).Norm()
+        return (self._pose.p - point).Norm()
 
     def is_a(self, super_type: str) -> bool:
         """
@@ -161,12 +161,12 @@ class Entity:
     @property
     def pose(self) -> FrameStamped:
         """Returns the pose of the Entity as a FrameStamped"""
-        return self._pose
+        return FrameStamped(self._pose, self.last_update_time, self.frame_id)
 
     @pose.setter
     def pose(self, pose):
         """Setter"""
-        self._pose = tf2_ros.convert(pose, FrameStamped)
+        self._pose = tf2_ros.convert(pose, FrameStamped).frame
 
     @property
     def person_properties(self) -> Union[PersonProperties, None]:
@@ -265,7 +265,7 @@ def from_entity_info(e: EntityInfo) -> Entity:
     frame_id = "map"  # ED has all poses in map
     # ToDo: Change pose in msg definition to PoseStamped
     pose_stamped = PoseStamped(pose=e.pose, header=Header(stamp=rospy.Time(), frame_id=frame_id))
-    pose = tf2_ros.convert(pose_stamped, FrameStamped)
+    pose = tf2_ros.convert(pose_stamped, FrameStamped).frame
     shape = shape_from_entity_info(e)
 
     last_update_time = e.last_update_time
