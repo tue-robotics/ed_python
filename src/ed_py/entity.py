@@ -116,14 +116,15 @@ class Entity:
         :param point: Assumed to be in the same frame_id as the entity itself
         :return: the distance between the entity's pose and the point
 
-        >>> e = Entity("dummy", None, None, kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), None, {}, None, 0)
+        >>> pose = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), rospy.Time(), "dummy")
+        >>> e = Entity("dummy", None, None, pose, None, {}, None, 0)
         >>> point = kdl.Vector(1, 1, 1)
         >>> e.distance_to_2d(point)
         2.8284271247461903
         """
 
         # The length of the difference vector between the pose's position and the point
-        difference = self._pose.p - point
+        difference = self.pose.frame.p - point
         difference.z(0)
         return difference.Norm()
 
@@ -134,12 +135,13 @@ class Entity:
         :param point: Assumed to be in the same frame_id as the entity itself
         :return: the distance between the entity's pose and the point
 
-        >>> e = Entity("dummy", None, None, kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), None, {}, None, 0)
+        >>> pose = FrameStamped(kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3)), rospy.Time(), "dummy")
+        >>> e = Entity("dummy", None, None, pose, None, {}, None, 0)
         >>> point = kdl.Vector(1, 1, 1)
         >>> e.distance_to_3d(point)
         3.4641016151377544
         """
-        return (self._pose.p - point).Norm()
+        return (self.pose.frame.p - point).Norm()
 
     def is_a(self, super_type: str) -> bool:
         """
@@ -179,8 +181,8 @@ class Entity:
         self._person_properties = value
 
     def __repr__(self):
-        return "Entity(id='{id}', type='{type}', frame={frame}, person_properties={pp})".format(
-            id=self.uuid, type=self.etype, frame=self.pose, pp=self._person_properties
+        return "Entity(uuid='{uuid}', etype='{etype}', frame={frame}, person_properties={pp})".format(
+            uuid=self.uuid, etype=self.etype, frame=self.pose, pp=self._person_properties
         )
 
 
@@ -266,7 +268,7 @@ def from_entity_info(e: EntityInfo) -> Entity:
     pose = tf2_ros.convert(pose_stamped, FrameStamped)
     shape = shape_from_entity_info(e)
 
-    last_update_time = e.last_update_time.to_sec()
+    last_update_time = e.last_update_time
 
     # The data is a string but can be parsed as yaml, which then represent is a much more usable data structure
     volumes = volumes_from_entity_volumes_msg(e.volumes)
