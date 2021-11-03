@@ -262,7 +262,7 @@ def from_entity_info(e: EntityInfo) -> Entity:
     object_type = e.type
     frame_id = "map"  # ED has all poses in map
     # ToDo: Change pose in msg definition to PoseStamped
-    pose_stamped = PoseStamped(pose=e.pose, header=Header(stamp=rospy.Time.now(), frame_id=frame_id))
+    pose_stamped = PoseStamped(pose=e.pose, header=Header(stamp=rospy.Time(), frame_id=frame_id))
     pose = tf2_ros.convert(pose_stamped, FrameStamped)
     shape = shape_from_entity_info(e)
 
