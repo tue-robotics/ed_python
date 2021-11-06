@@ -5,6 +5,7 @@ from typing import List, Mapping, Union
 import yaml
 
 from ed_msgs.msg import EntityInfo
+from genpy import Time
 from geometry_msgs.msg import PoseStamped
 import PyKDL as kdl
 from pykdl_ros import FrameStamped, VectorStamped
@@ -36,7 +37,7 @@ class Entity:
         shape: Shape,
         volumes: Mapping[str, Volume],
         super_types: List[str],
-        last_update_time,
+        last_update_time: Time,
         person_properties=None,
     ):
         """
@@ -49,6 +50,7 @@ class Entity:
         :param shape: Shape of this entity
         :param volumes: dict mapping strings to Volume
         :param super_types: list with strings representing super types in an ontology of object types
+        :param last_update_time: Time of last update
         """
         self.uuid = identifier
         self.etype = object_type
@@ -164,7 +166,7 @@ class Entity:
         return FrameStamped(self._pose, self.last_update_time, self.frame_id)
 
     @pose.setter
-    def pose(self, pose):
+    def pose(self, pose: FrameStamped):
         """Setter"""
         self._pose = tf2_ros.convert(pose, FrameStamped).frame
 
