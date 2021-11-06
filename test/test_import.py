@@ -6,7 +6,7 @@ class TestImport(unittest.TestCase):
         """
         If no exception is raised, this test will succeed
         """
-        import ed_py
+        import ed
 
 
 if __name__ == "__main__":
