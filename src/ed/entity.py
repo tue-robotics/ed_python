@@ -278,6 +278,20 @@ def from_entity_info(e: EntityInfo) -> Entity:
 
     super_types = e.types
 
+    # ToDo: Hacky logic from robot_skills
+    if (
+        e.has_shape
+        and not any([name in e.id for name in ["amigo", "sergio", "hero"]])
+        and e.id != "floor"
+        and "wall" not in e.id
+    ):
+        super_types += ["furniture"]
+
+    # ToDo: Hacky logic from robot_skills
+    if all([v in volumes for v in ["handle", "frame_left_point", "frame_right_point"]]):
+        super_types += ["door"]
+        super_types.remove("furniture")
+
     if "possible_human" in e.flags:
         super_types += ["possible_human"]
 
