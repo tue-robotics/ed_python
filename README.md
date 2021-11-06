@@ -1,6 +1,6 @@
 # ed_python
-[![Build Status](https://travis-ci.org/tue-robotics/ed_python.svg?branch=master)](https://travis-ci.org/tue-robotics/ed_python)
+[![CI](https://github.com/tue-robotics/ed_python/actions/workflows/main.yml/badge.svg)](https://github.com/tue-robotics/ed_python/actions/workflows/main.yml) [![Lint](https://github.com/tue-robotics/ed_python/actions/workflows/black.yml/badge.svg)](https://github.com/tue-robotics/ed_python/actions/workflows/black.yml)
 
 ```
-import ed_py
+import ed
 ```
