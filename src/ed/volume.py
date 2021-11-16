@@ -4,11 +4,6 @@ from typing import Dict, Iterable, List, Tuple, Union
 import PyKDL as kdl
 from numpy import abs
 
-import tf2_ros
-
-# noinspection PyUnresolvedReferences
-import tf2_kdl
-
 from ed_msgs.msg import Volume as volume_msg
 
 
@@ -290,7 +285,8 @@ def volume_from_entity_volume_msg(msg: volume_msg) -> Tuple[Union[str, None], Un
             size = subvolume.geometry.dimensions
             size = kdl.Vector(size[0], size[1], size[2])
 
-            center_point = tf2_ros.convert(subvolume.center_point.point, kdl.Vector)
+            p = subvolume.center_point.point
+            center_point = kdl.Vector(p.x(), p.y(), p.z())
 
             sub_min = center_point - size / 2
             sub_max = center_point + size / 2
