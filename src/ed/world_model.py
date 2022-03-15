@@ -1,4 +1,4 @@
-from typing import Iterable, List, Union
+from typing import Iterable, List, Optional
 
 import traceback
 
@@ -90,7 +90,7 @@ class WM:
 
     def get_closest_entity(
         self, center_point: VectorStamped, etype: str = "", radius: float = float("inf")
-    ) -> Union[Entity, None]:
+    ) -> Optional[Entity]:
 
         entities = self.get_entities(center_point=center_point, etype=etype, radius=radius)
 
@@ -218,7 +218,7 @@ class WM:
 
     def get_closest_possible_person_entity(
         self, center_point: VectorStamped, radius: float = float("inf")
-    ) -> Union[Entity, None]:
+    ) -> Optional[Entity]:
         """
         Returns the "possible_human" entity closest to a certain center point.
 
