@@ -243,7 +243,7 @@ class OffsetVolume(Volume):
         return "OffsetVolume(offset={})".format(self._offset)
 
 
-def volume_from_entity_volume_msg(msg: volume_msg) -> Tuple[Union[str, None], Union[Volume, None]]:
+def volume_from_entity_volume_msg(msg: volume_msg) -> Tuple[Optional[str], Optional[Volume]]:
     """
     Creates a dict mapping strings to Volumes from the EntityInfo data dictionary
 
