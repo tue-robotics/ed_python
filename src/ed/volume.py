@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, List, Tuple, Union
+from typing import Dict, Iterable, List, Optional,Tuple, Union
 
 # ROS
 import PyKDL as kdl
