@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Mapping, Union
+from typing import List, Mapping, Optional
 
 import yaml
 
@@ -171,7 +171,7 @@ class Entity:
         self._pose = tf2_ros.convert(pose, FrameStamped).frame
 
     @property
-    def person_properties(self) -> Union[PersonProperties, None]:
+    def person_properties(self) -> Optional[PersonProperties]:
         if self._person_properties:
             return self._person_properties
         else:
