@@ -124,6 +124,20 @@ class BoxVolume(Volume):
         """
         Checks if the point is inside this volume
 
+        >>> b = BoxVolume(kdl.Vector(0,0,0), kdl.Vector(1,1,1))
+        >>> b.contains(kdl.Vector(0.1, 0.1, 0.1))
+        True
+        >>> b.contains(kdl.Vector(0.1, 0.1, 0.1), padding=0.2)
+        True
+        >>> b.contains(kdl.Vector(0.1, 0.1, 0.1), padding=-0.2)
+        False
+        >>> b.contains(kdl.Vector(-0.1, -0.1, -0.1))
+        False
+        >>> b.contains(kdl.Vector(-0.1, -0.1, -0.1), padding=0.2)
+        True
+        >>> b.contains(kdl.Vector(-0.1, -0.1, -0.1), padding=-0.2)
+        False
+
         :param point: Vector w.r.t. the same frame as this volume
         :param padding: Padding to take into account. Positive values make the volume bigger, negative values smaller.
         :return: True if inside, False otherwise
@@ -208,6 +222,20 @@ class CompositeBoxVolume(Volume):
     def contains(self, point: kdl.Vector, padding: float = 0) -> bool:
         """
         Checks if the point is inside this volume
+
+        >>> b = CompositeBoxVolume([(kdl.Vector(0,0,0), kdl.Vector(1,1,1))])
+        >>> b.contains(kdl.Vector(0.1, 0.1, 0.1))
+        True
+        >>> b.contains(kdl.Vector(0.1, 0.1, 0.1), padding=0.2)
+        True
+        >>> b.contains(kdl.Vector(0.1, 0.1, 0.1), padding=-0.2)
+        False
+        >>> b.contains(kdl.Vector(-0.1, -0.1, -0.1))
+        False
+        >>> b.contains(kdl.Vector(-0.1, -0.1, -0.1), padding=0.2)
+        True
+        >>> b.contains(kdl.Vector(-0.1, -0.1, -0.1), padding=-0.2)
+        False
 
         :param point: Vector w.r.t. the same frame as this volume
         :param padding: Padding to take into account. Positive values make the volume bigger, negative values smaller.
