@@ -67,12 +67,13 @@ class Entity:
     def volumes(self):
         return self._volumes
 
-    def in_volume(self, point: VectorStamped, volume_id: str) -> bool:
+    def in_volume(self, point: VectorStamped, volume_id: str, padding: float = 0) -> bool:
         """
         Checks if the point is in the volume identified by the volume id
 
         :param point: VectorStamped with the point to check
         :param volume_id: string with the volume
+        :param padding: Padding to take into account. Positive values make the volume bigger, negative values smaller.
         :return: boolean indicating whether the point is in the designated volume. If an error occurs, False is returned
         """
         # Check if the volume exists
@@ -93,7 +94,7 @@ class Entity:
         vector = self.pose.frame.Inverse() * point.vector
 
         # Check if the point is inside of the volume
-        return self._volumes[volume_id].contains(vector)
+        return self._volumes[volume_id].contains(vector, padding)
 
     def entities_in_volume(self, entities: List[Entity], volume_id: str) -> List[Entity]:
         """

@@ -29,11 +29,12 @@ class Volume:
             "Class {cls} has no implementation".format(cls=self.__class__.__name__)
         )
 
-    def contains(self, point: kdl.Vector) -> bool:
+    def contains(self, point: kdl.Vector, padding: float = 0) -> bool:
         """
         Checks if the point is inside this volume
 
         :param point: kdl Vector w.r.t. the same frame as this volume
+        :param padding: Padding to take into account. Positive values make the volume bigger, negative values smaller.
         :return: True if inside, False otherwise
         """
         raise NotImplementedError(
@@ -119,17 +120,18 @@ class BoxVolume(Volume):
         convex_hull.append(kdl.Vector(self.min_corner.x(), self.max_corner.y(), self.min_corner.z()))  # 4
         return convex_hull
 
-    def contains(self, point: kdl.Vector) -> bool:
+    def contains(self, point: kdl.Vector, padding: float = 0) -> bool:
         """
         Checks if the point is inside this volume
 
         :param point: Vector w.r.t. the same frame as this volume
+        :param padding: Padding to take into account. Positive values make the volume bigger, negative values smaller.
         :return: True if inside, False otherwise
         """
         return (
-            self._min_corner.x() <= point.x() <= self._max_corner.x()
-            and self._min_corner.y() <= point.y() <= self._max_corner.y()
-            and self._min_corner.z() <= point.z() <= self._max_corner.z()
+            self._min_corner.x() - padding <= point.x() <= self._max_corner.x() + padding
+            and self._min_corner.y() - padding <= point.y() <= self._max_corner.y() + padding
+            and self._min_corner.z() - padding <= point.z() <= self._max_corner.z() + padding
         )
 
     def __repr__(self):
@@ -203,18 +205,19 @@ class CompositeBoxVolume(Volume):
         ]
         return convex_hull
 
-    def contains(self, point: kdl.Vector) -> bool:
+    def contains(self, point: kdl.Vector, padding: float = 0) -> bool:
         """
         Checks if the point is inside this volume
 
         :param point: Vector w.r.t. the same frame as this volume
+        :param padding: Padding to take into account. Positive values make the volume bigger, negative values smaller.
         :return: True if inside, False otherwise
         """
         for min_corner, max_corner in zip(self._min_corners, self._max_corners):
             if (
-                min_corner.x() <= point.x() <= max_corner.x()
-                and min_corner.y() <= point.y() <= max_corner.y()
-                and min_corner.z() <= point.z() <= max_corner.z()
+                min_corner.x() - padding <= point.x() <= max_corner.x() + padding
+                and min_corner.y() - padding <= point.y() <= max_corner.y() + padding
+                and min_corner.z() - padding <= point.z() <= max_corner.z() + padding
             ):
                 return True
 
