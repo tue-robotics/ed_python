@@ -250,8 +250,20 @@ class PersonProperties(object):
         self._name = value
 
     def __repr__(self):
-        return "PersonProperties(age='{age}', gender='{g}', gender_confidence={gc}, shirt_colors={sc})".format(
-            age=self.age, g=self.gender, gc=self.gender_confidence, sc=self.shirt_colors
+        return (
+            f"PersonProperties("
+            f"age='{self.age}', "
+            f"emotion='{self.emotion}', "
+            f"gender='{self.gender}', "
+            f"gender_confidence={self.gender_confidence}, "
+            f"pointing_pose={self.pointing_pose}, "
+            f"posture={self.posture}, "
+            f"reliability={self.reliability}, "
+            f"shirt_colors={self.shirt_colors}, "
+            f"tags={self.tags}, "
+            f"tagnames={self.tagnames}, "
+            f"velocity={self.velocity}"
+            f")"
         )
 
 
