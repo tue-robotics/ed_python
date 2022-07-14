@@ -10,12 +10,6 @@ class Shape:
     def __init__(self):
         pass
 
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return all(v1 == v2 for v1, v2 in zip(self.__dict__.values(), other.__dict__.values()))
-        else:
-            return False
-
     @property
     def convex_hull(self) -> List[kdl.Vector]:
         return self._calc_convex_hull()
