@@ -63,6 +63,15 @@ class Entity:
 
         self._person_properties = person_properties
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.uuid == other.uuid
+        else:
+            return False
+
+    def __hash__(self):
+        return self.uuid
+
     @property
     def volumes(self):
         return self._volumes
