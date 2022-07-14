@@ -63,6 +63,12 @@ class Entity:
 
         self._person_properties = person_properties
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return all(v1 == v2 for v1, v2 in zip(self.__dict__.values(), other.__dict__.values()))
+        else:
+            return False
+
     @property
     def volumes(self):
         return self._volumes
