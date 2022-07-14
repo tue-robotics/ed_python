@@ -70,7 +70,7 @@ class Entity:
             return False
 
     def __hash__(self):
-        return self.uuid
+        return hash(self.uuid)
 
     @property
     def volumes(self):
