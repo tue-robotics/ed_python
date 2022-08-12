@@ -84,7 +84,6 @@ class Entity:
                 rospy.logerr(f"Not able to hash type: {type(item)}")
         return hash(tuple(attrs))
 
-
     @property
     def volumes(self):
         return self._volumes
