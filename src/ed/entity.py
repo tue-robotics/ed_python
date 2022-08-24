@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import List, Mapping, Optional
 
-from collections import Hashable, Mapping
-
 import yaml
 
 from ed_msgs.msg import EntityInfo
@@ -26,8 +24,9 @@ import tf2_pykdl_ros
 from .shape import shape_from_entity_info, Shape
 from .volume import Volume, volumes_from_entity_volumes_msg
 
+from .util.equal_hash_mixin import EqualHashMixin
 
-class Entity:
+class Entity(EqualHashMixin):
     """Holds all data concerning entities"""
 
     def __init__(
@@ -64,25 +63,6 @@ class Entity:
         self._last_update_time = last_update_time
 
         self._person_properties = person_properties
-
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return all(v1 == v2 for v1, v2 in zip(self.__dict__.values(), other.__dict__.values()))
-        else:
-            return False
-
-    def __hash__(self):
-        attrs = []
-        for item in self.__dict__.values():
-            if isinstance(item, Mapping):
-                attrs.append(tuple(k, v) for k, v in item.items())
-            elif isinstance(item, list):
-                attrs.append(tuple(item))
-            elif isinstance(item, Hashable):
-                attrs.append(item)
-            else:
-                rospy.logerr(f"Not able to hash type: {type(item)}")
-        return hash(tuple(attrs))
 
     @property
     def volumes(self):
