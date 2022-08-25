@@ -26,6 +26,7 @@ from .volume import Volume, volumes_from_entity_volumes_msg
 
 from .util.equal_hash_mixin import EqualHashMixin
 
+
 class Entity(EqualHashMixin):
     """Holds all data concerning entities"""
 
