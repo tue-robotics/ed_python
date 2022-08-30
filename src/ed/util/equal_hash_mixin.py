@@ -14,7 +14,10 @@ class EqualHashMixin:
         attrs = []
         for item in self.__dict__.values():
             if isinstance(item, Mapping):
-                attrs.append(tuple(k, v) for k, v in item.items())
+                mapping_tuples = []
+                for k, v in item.items():
+                    mapping_tuples.append(tuple(k, v))
+                attrs.append(tuple(mapping_tuples))
             elif isinstance(item, list):
                 attrs.append(tuple(item))
             elif isinstance(item, Hashable):
