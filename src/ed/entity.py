@@ -24,8 +24,10 @@ import tf2_pykdl_ros
 from .shape import shape_from_entity_info, Shape
 from .volume import Volume, volumes_from_entity_volumes_msg
 
+from .util.equal_hash_mixin import EqualHashMixin
 
-class Entity:
+
+class Entity(EqualHashMixin):
     """Holds all data concerning entities"""
 
     def __init__(
@@ -62,15 +64,6 @@ class Entity:
         self._last_update_time = last_update_time
 
         self._person_properties = person_properties
-
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return self.uuid == other.uuid
-        else:
-            return False
-
-    def __hash__(self):
-        return hash(self.uuid)
 
     @property
     def volumes(self):

@@ -1,13 +1,16 @@
-from typing import Dict, Iterable, List, Optional, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Tuple
 
 # ROS
+import rospy
 import PyKDL as kdl
 from numpy import abs
 
 from ed_msgs.msg import Volume as volume_msg
 
+from .util.equal_hash_mixin import EqualHashMixin
 
-class Volume:
+
+class Volume(EqualHashMixin):
     """
     Represents a volume of an entity
 
