@@ -1,7 +1,6 @@
 from typing import Dict, Iterable, List, Optional, Tuple
 
 # ROS
-import rospy
 import PyKDL as kdl
 from numpy import abs
 
