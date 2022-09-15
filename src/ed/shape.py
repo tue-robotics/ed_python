@@ -1,6 +1,5 @@
 from typing import List
 
-import rospy
 from ed_msgs.msg import EntityInfo
 import PyKDL as kdl
 
