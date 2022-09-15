@@ -24,8 +24,10 @@ import tf2_pykdl_ros
 from .shape import shape_from_entity_info, Shape
 from .volume import Volume, volumes_from_entity_volumes_msg
 
+from .util.equal_hash_mixin import EqualHashMixin
 
-class Entity:
+
+class Entity(EqualHashMixin):
     """Holds all data concerning entities"""
 
     def __init__(

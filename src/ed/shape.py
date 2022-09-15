@@ -3,8 +3,10 @@ from typing import List
 from ed_msgs.msg import EntityInfo
 import PyKDL as kdl
 
+from .util.equal_hash_mixin import EqualHashMixin
 
-class Shape:
+
+class Shape(EqualHashMixin):
     """Represents shape properties"""
 
     def __init__(self):
