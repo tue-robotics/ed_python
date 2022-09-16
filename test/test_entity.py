@@ -5,6 +5,7 @@ import PyKDL as kdl
 import rospy
 
 from ed.entity import Entity
+from ed.volume import BoxVolume
 
 
 class TestShape(unittest.TestCase):
@@ -20,6 +21,20 @@ class TestShape(unittest.TestCase):
         e3._pose = kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3))
         self.assertNotEqual(e1, e3)
 
+        # Entity with a volume
+        e4 = Entity(
+            "dummy",
+            None,
+            "map",
+            pose,
+            None,
+            {"in": BoxVolume(kdl.Vector(0, 0, 0), kdl.Vector(1, 1, 1))},
+            None,
+            rospy.Time(),
+        )
+        e5 = deepcopy(e4)
+        self.assertEqual(e4, e5)
+
     def test_entity_hash(self):
         """
         Two empty entities should have the same hash and should be consistent
@@ -32,6 +47,20 @@ class TestShape(unittest.TestCase):
         e3 = deepcopy(e1)
         e3._pose = kdl.Frame(kdl.Rotation.RPY(1, 0, 0), kdl.Vector(3, 3, 3))
         self.assertNotEqual(hash(e1), hash(e3))
+
+        # Entity with a volume
+        e4 = Entity(
+            "dummy",
+            None,
+            "map",
+            pose,
+            None,
+            {"in": BoxVolume(kdl.Vector(0, 0, 0), kdl.Vector(1, 1, 1))},
+            None,
+            rospy.Time(),
+        )
+        e5 = deepcopy(e4)
+        self.assertEqual(hash(e4), hash(e5))
 
 
 if __name__ == "__main__":
