@@ -29,6 +29,7 @@
   <exec_depend>tf2_pykdl_ros</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
 
+  <test_depend>catkin_lint_cmake</test_depend>
   <test_depend>test_tools</test_depend>
 
   <doc_depend>python3-sphinx</doc_depend>
