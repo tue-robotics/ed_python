@@ -5,7 +5,7 @@
 <package format="3">
   <name>ed_python</name>
   <version>0.0.1</version>
-  <description>Python interface to ed_msgs</description>
+  <description>Python library to interface with the ROS API's defined in ed_msgs</description>
 
   <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
 
