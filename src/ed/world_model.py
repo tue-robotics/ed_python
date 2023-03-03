@@ -91,7 +91,6 @@ class WM:
     def get_closest_entity(
         self, center_point: VectorStamped, etype: str = "", radius: float = float("inf")
     ) -> Optional[Entity]:
-
         entities = self.get_entities(center_point=center_point, etype=etype, radius=radius)
 
         # HACK
