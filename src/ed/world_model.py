@@ -112,7 +112,7 @@ class WM:
     def get_closest_room(self, center_point: VectorStamped, radius: float = float("inf")) -> Entity:
         return self.get_closest_entity(center_point=center_point, etype="room", radius=radius)
 
-    def get_entity(self, uuid: str):
+    def get_entity(self, uuid: str) -> Optional[Entity]:
         entities = self.get_entities(
             uuid=uuid, center_point=VectorStamped(vector=kdl.Vector(), stamp=rospy.Time(), frame_id="map")
         )
