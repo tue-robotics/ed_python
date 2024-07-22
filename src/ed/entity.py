@@ -323,7 +323,7 @@ def from_entity_info(e: EntityInfo) -> Entity:
 
     if e.type == "person":
         try:
-            pp_dict = yaml.load(e.data)
+            pp_dict = yaml.load(e.data, yaml.SafeLoader)
             del pp_dict["position"]
             del pp_dict["header"]
             entity.person_properties = PersonProperties(parent_entity=entity, **pp_dict)
