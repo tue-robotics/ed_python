@@ -41,6 +41,7 @@ class Entity(EqualHashMixin):
         super_types: List[str],
         last_update_time: Time,
         person_properties=None,
+        existence_probability: float = 1.0,
     ):
         """
         Constructor
@@ -62,6 +63,7 @@ class Entity(EqualHashMixin):
         self._volumes = volumes if volumes else {}
         self.super_types = super_types if super_types else []
         self._last_update_time = last_update_time
+        self.existence_probability = existence_probability
 
         self._person_properties = person_properties
 
@@ -186,8 +188,8 @@ class Entity(EqualHashMixin):
         self._person_properties = value
 
     def __repr__(self):
-        return "Entity(uuid='{uuid}', etype='{etype}', frame={frame}, person_properties={pp})".format(
-            uuid=self.uuid, etype=self.etype, frame=self.pose, pp=self._person_properties
+        return "Entity(uuid='{uuid}', etype='{etype}', existence_probability={ep}, frame={frame}, person_properties={pp})".format(
+            uuid=self.uuid, etype=self.etype, ep=self.existence_probability, frame=self.pose, pp=self._person_properties
         )
 
 
@@ -319,6 +321,7 @@ def from_entity_info(e: EntityInfo) -> Entity:
         volumes=volumes,
         super_types=super_types,
         last_update_time=last_update_time,
+        existence_probability=e.existence_probability,
     )
 
     if e.type == "person":
